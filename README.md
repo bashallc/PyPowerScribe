@@ -2,6 +2,14 @@
 
 This is a REST API implementation for Radiology Nuance PowerScribe 360 dictation system. This API will allow you to send and retrieve data points into pre-built custom fields that populates radiologist final report. For example, you can push radiation dose information into custom field that will populate the radiologist final report.
 
+Some functions of the API include
+- Sending custom fields
+- Getting order information
+- Getting signoff list queues
+- Getting worklist enteries
+- Getting custom field definition details
+
+
 ## Sample Implementation
 
 The following will allow you to connect to PowerScribe 360 server and send custom field to the radiologist report.
