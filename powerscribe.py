@@ -2,13 +2,21 @@ import requests
 import re
 
 
+from powerscribe.Powerscribe import Powerscribe
+import powerscribe.Powerscribe
+import requests
+import re
+
+
+# In[12]:
+
 class Powerscribe():
 
     def __init__(self, url):
         self.client = requests.session()
         self.url = url.rstrip('/')
-        self.username = ""
-        self.password = ""
+        self.username = ***username**
+        self.password = ***password***
 
     def sign_in(self, username, password):
         """signin to Powerscribe 360        
@@ -36,19 +44,20 @@ class Powerscribe():
 
     def web_request(self, uri, data):
         headers = {'content-type': 'application/x-www-form-urlencoded'}
-
         response = self.client.request(
             "POST", self.url + uri, data=data.encode('ascii'), headers=headers)
+        print(response)
+        #was in data data=data.encode('ascii')
         success = 200 <= response.status_code <= 299
 
         if not success:
             print(response.text)
 
         return success, response.text
+   
 
     def set_custom_field(self, accession, field_name, field_value):
         """set_custom_field allow you sent field to powerscribe 360
-
         Arguments:
             accession {string} -- accession number in powerscribe
             field_name {string} -- custom field name in powerscribe
@@ -76,7 +85,72 @@ class Powerscribe():
             return success, order_id_search.group(1)
         else:
             return success, None
-
+    
+    def get_queue(self,accountID):
+        uri = "/services/explorer.asmx/GetSigningQueueCount"
+        payload = f"accountID={accountID}"
+        success, response_text = self.web_request(uri, payload)
+        if success:
+            print(response_text)
+            return success, response_text
+        else:
+            return success, None
+    
+    def get_queueEX(self,accountID):
+        uri = "/services/explorer.asmx/GetSigningQueueEx"
+        payload = f"accountID={accountID}&sort="
+       
+        print(payload)
+        success, response_text = self.web_request(uri, payload)
+        if success:
+            print(response_text)
+            return success, response_text
+        else:
+            return success, None
+        
+    def get_worklist(self,worklist):
+        uri = "/services/explorer.asmx/ViewWorklistEx"
+        payload = f"name={worklist}&sort="
+        success, response_text = self.web_request(uri, payload)
+        if success:
+            print(response_text)
+            return success, response_text
+        else:
+            return success, None
+        
+    def get_patient(self,umrn,site):
+        uri = "/services/explorer.asmx/SearchByPatientIdentifierEx"
+        payload = f"identifier={umrn}&site={site}&sort="
+        success, response_text = self.web_request(uri, payload)
+        if success:
+            print(response_text)
+            return success, response_text
+        else:
+            return success, None
+        
+    def get_accessionEX(self,accession,site):
+        uri = "/services/explorer.asmx/SearchByAccessionEx"
+        payload = f"accessions={accession}&site={site}&sort="
+        print(payload)
+        success, response_text = self.web_request(uri, payload)
+        if success:
+            print(response_text)
+            return success, response_text
+        else:
+            return success, None
+        
+    def get_custom_def(self,site,accession):
+        uri = "/services/customfield.asmx/GetCustomFieldDefinitions"
+        payload = f"accession={accession}&site={site}&sort="
+        print(payload)
+        success, response_text = self.web_request(uri, payload)
+        if success:
+            print(response_text)
+            return success, response_text
+        else:
+            return success, None
+    
+    
     def __enter__(self):
         return self
 
@@ -93,6 +167,7 @@ class StringHelper():
         if (str is None) or (str == "") or (str.isspace()):
             return True
         return False
+
 
 
 if __name__ == '__main__':
